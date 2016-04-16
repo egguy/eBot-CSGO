@@ -23,6 +23,7 @@ class Config extends Singleton {
     private $mysql_user;
     private $mysql_pass;
     private $mysql_base;
+    private $bot_public_ip;
     private $bot_ip;
     private $bot_port;
     private $messages = array();
@@ -59,7 +60,15 @@ class Config extends Singleton {
             $this->mysql_pass = $config["MYSQL_PASS"];
             $this->mysql_base = $config["MYSQL_BASE"];
 
+            $this->bot_public_ip = $config['BOT_PUBLIC_IP'];
             $this->bot_ip = $config["BOT_IP"];
+            // Use the bot ip if the config is missing
+            if(isset($config['BOT_PUBLIC_IP'])){
+                $this->bot_public_ip = $config['BOT_PUBLIC_IP'];
+            } else {
+                $this->bot_public_ip = $config["BOT_IP"]; 
+            }
+
             $this->bot_port = $config["BOT_PORT"];
 
             $this->delay_busy_server = $config["DELAY_BUSY_SERVER"];
@@ -156,6 +165,14 @@ class Config extends Singleton {
 
     public function setBot_ip($bot_ip) {
         $this->bot_ip = $bot_ip;
+    }
+
+    public function getBot_public_ip() {
+        return $this->bot_public_ip;
+    }
+
+    public function setBot_public_ip($bot_ip) {
+        $this->bot_public_ip = $bot_ip;
     }
 
     public function getBot_port() {

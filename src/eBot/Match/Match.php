@@ -163,7 +163,8 @@ class Match implements Taskable {
             $this->rcon = new Rcon($ip[0], $ip[1], $rcon);
             $this->rconPassword = $rcon;
             Logger::log("RCON init ok");
-            $this->rcon->send("log on; logaddress_del " . \eBot\Config\Config::getInstance()->getBot_ip() . ":" . \eBot\Config\Config::getInstance()->getBot_port() . ";logaddress_add " . \eBot\Config\Config::getInstance()->getBot_ip() . ":" . \eBot\Config\Config::getInstance()->getBot_port());
+            // Use the public IP for the logging, with this we can facilitate the use of docker
+            $this->rcon->send("log on; logaddress_del " . \eBot\Config\Config::getInstance()->getBot_public_ip() . ":" . \eBot\Config\Config::getInstance()->getBot_port() . ";logaddress_add " . \eBot\Config\Config::getInstance()->getBot_public_ip() . ":" . \eBot\Config\Config::getInstance()->getBot_port());
             $this->addMatchLog("- RCON connection OK", true, false);
         } catch (\Exception $ex) {
             $this->needDel = true;
@@ -583,7 +584,7 @@ class Match implements Taskable {
             $this->addLog("Stopping record & push");
             $this->rcon->send("tv_stoprecord");
             if (\eBot\Config\Config::getInstance()->getDemoDownload())
-                $this->rcon->send('csay_tv_demo_push "' . $this->currentRecordName . '.dem" "http://' . \eBot\Config\Config::getInstance()->getBot_ip() . ':' . \eBot\Config\Config::getInstance()->getBot_port() . '/upload"');
+                $this->rcon->send('csay_tv_demo_push "' . $this->currentRecordName . '.dem" "http://' . \eBot\Config\Config::getInstance()->getBot_public_ip() . ':' . \eBot\Config\Config::getInstance()->getBot_port() . '/upload"');
             $this->currentRecordName = "";
             $this->rcon->send("exec server.cfg;");
         } elseif ($name == self::TASK_DELAY_READY) {
@@ -2713,7 +2714,7 @@ class Match implements Taskable {
                     // FIX for warmup
 
                     $this->rcon->send("exec " . $this->matchData["rules"] . ".cfg; mp_warmuptime 0; mp_halftime_pausetimer 1; mp_warmup_pausetimer 0;");
-                    $this->rcon->send("sv_rcon_whitelist_address \"" . \eBot\Config\Config::getInstance()->getBot_ip() . "\"");
+                    $this->rcon->send("sv_rcon_whitelist_address \"" . \eBot\Config\Config::getInstance()->getBot_public_ip() . "\"");
                     $this->rcon->send("mp_halftime_duration 1; mp_roundtime_defuse 60");
                     $this->rcon->send("mp_warmup_end");
                     if (\eBot\Config\Config::getInstance()->getKo3Method() == "csay" && $this->pluginCsay) {
@@ -2749,7 +2750,7 @@ class Match implements Taskable {
 
                             // NEW
                             $this->rcon->send("exec $fichier; mp_warmuptime 0; mp_halftime_pausetimer 1;");
-                            $this->rcon->send("sv_rcon_whitelist_address \"" . \eBot\Config\Config::getInstance()->getBot_ip() . "\"");
+                            $this->rcon->send("sv_rcon_whitelist_address \"" . \eBot\Config\Config::getInstance()->getBot_public_ip() . "\"");
                             $this->rcon->send("mp_halftime_duration 1");
                             $this->rcon->send("mp_warmup_end");
                             if (\eBot\Config\Config::getInstance()->getLo3Method() == "csay" && $this->pluginCsay) {

@@ -60,7 +60,6 @@ class Config extends Singleton {
             $this->mysql_pass = $config["MYSQL_PASS"];
             $this->mysql_base = $config["MYSQL_BASE"];
 
-            $this->bot_public_ip = $config['BOT_PUBLIC_IP'];
             $this->bot_ip = $config["BOT_IP"];
             // Use the bot ip if the config is missing
             if(isset($config['BOT_PUBLIC_IP'])){
